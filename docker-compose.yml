@@ -1,0 +1,26 @@
+services:
+  distcc:
+    image: distcc-docker
+    container_name: distcc-server
+    privileged: true
+    environment:
+        - ALLOW_NET_RANGE=0.0.0.0/0
+        - NICE=19
+        - JOBS=8
+        - CF_TUNNEL_TOKEN=
+    cap_add:
+      - SYS_NICE
+      - SYS_PTRACE
+      - SYS_TIME
+    volumes:
+      - type: bind
+        source: /tmp/distcc
+        target: /tmp
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    security_opt:
+      - "seccomp=unconfined"
+    restart: unless-stopped
+    sysctls:
+      - net.ipv4.ip_local_port_range=12000 60999
